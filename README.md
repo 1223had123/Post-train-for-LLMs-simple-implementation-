@@ -4,7 +4,7 @@
 
 ## Repository Description
 
-Minimal Qwen post-training playground with CoT prompting, self-consistency, and evaluation scripts for GSM8K, SVAMP, StrategyQA, and BBH logical deduction. SFT/PPO/RLHF modules are planned but not implemented yet.
+Minimal Qwen post-training playground with CoT prompting, self-consistency, and evaluation scripts for GSM8K, SVAMP, AQuA-RAT, StrategyQA, and BBH logical deduction. SFT/PPO/RLHF modules are planned but not implemented yet.
 
 ## 项目状态
 
@@ -19,8 +19,25 @@ Minimal Qwen post-training playground with CoT prompting, self-consistency, and 
 - GSM8K 批量推理脚本：使用 `DataLoader` 随机加载测试样本，减少逐条 I/O 开销。
 - 针对不同任务类型的答案解析：
   - 数学题：抽取最终数值答案。
+  - AQuA-RAT：抽取 `(A)/(B)/(C)/(D)/(E)` 选项。
   - StrategyQA：抽取 `是/否`。
   - BBH logical deduction：抽取 `(A)/(B)/(C)`。
+
+## 实验进度展示
+
+当前已完成五个数据集的 CoT 对比实验：GSM8K、SVAMP、AQuA-RAT、StrategyQA 和 BBH logical deduction。下面三张图由 `plotly/` 中的实验结果图导出，用于展示当前阶段的实验进度。
+
+### 五数据集准确率雷达图
+
+<img src="plotly/accuracy_radar_5datasets.png" alt="Accuracy radar chart across five datasets" width="720">
+
+### CoT 对比实验图
+
+<img src="plotly/CoT对比实验图.png" alt="CoT comparison experiment chart" width="720">
+
+### GSM8K 实验结构
+
+<img src="plotly/gsm8k_experiment_structure.png" alt="GSM8K experiment structure" width="720">
 
 未实现：
 
@@ -39,8 +56,10 @@ Minimal Qwen post-training playground with CoT prompting, self-consistency, and 
 .
 ├── CoT/                 # GSM8K 数学推理样例
 ├── CoT_svamp/           # SVAMP 数学应用题样例
+├── CoT_aqua/            # AQuA-RAT 多选数学题样例
 ├── CoT_strategyqa/      # StrategyQA 是/否常识推理样例
 ├── CoT_bbh_logical/     # BBH logical deduction 选项推理样例
+├── plotly/              # 实验进度图和可视化脚本
 ├── data/                # 本地数据文件
 └── models -> ...        # 本地模型路径，通常是外部模型目录的软链接
 ```
@@ -93,6 +112,7 @@ ln -s /path/to/Qwen/models models
 data/gsm8k/main/train-00000-of-00001.parquet
 data/gsm8k/main/test-00000-of-00001.parquet
 data/svamp/test.parquet
+data/aqua_rat/test-00000-of-00001.parquet
 data/strategyqa/test.json
 data/bbh_logical/test-00000-of-00001.parquet
 ```
@@ -128,6 +148,13 @@ python ./CoT/test.py --batch-size 4 --save-path outputs/gsm8k_dense_scale.jsonl
 ```bash
 python ./CoT_svamp/baseline.py
 python ./CoT_svamp/self-consistence.py --sample-size 100 --num-samples 5
+```
+
+### AQuA-RAT
+
+```bash
+python ./CoT_aqua/baseline.py
+python ./CoT_aqua/self-consistence.py --sample-size 100 --num-samples 5
 ```
 
 ### StrategyQA

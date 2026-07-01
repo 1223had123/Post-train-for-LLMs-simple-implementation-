@@ -249,5 +249,5 @@ prompt_baseline = """
 baseline_acc:38.076%
 CoT_shot_Direct: 87.128%
 CoT_acc(Few-shot): 90.411%
-CoT_acc(self-consistence): 91.1111%
+CoT_acc(self-consistence): 89.823%
 '''

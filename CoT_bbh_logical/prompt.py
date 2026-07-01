@@ -52,3 +52,9 @@ prompt_baseline = """你是一个 BBH logical deduction 选择题考生。请根
 - 最终答案只能是一个选项。
 - 不要输出解释、代码块、表格或额外结束标记。
 """
+'''
+baseline(acc) = 41.837%
+CoT_direct(acc) = 62.376%
+CoT_Fewshot(acc) = 71.428%
+self-consistence(acc) = 76.041%
+'''

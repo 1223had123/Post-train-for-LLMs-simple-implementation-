@@ -5,7 +5,7 @@ from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from evaluate import evaluate_prediction
-from prompt import prompt
+from prompt import prompt,prompt_baseline,COT_FORMAT
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]

@@ -7,7 +7,7 @@ from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from evaluate import extract_gold, extract_pred
-from prompt import promt,prompt_baseline
+from prompt import promt
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -16,7 +16,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", default=str(ROOT_DIR / "models/Qwen3-1.7B"))
-    parser.add_argument("--test-file", default=str(ROOT_DIR / "data/strategyqa/test.json"))
+    parser.add_argument("--test-file", default=str(ROOT_DIR / "data/aqua_rat/test-00000-of-00001.parquet"))
     parser.add_argument("--cache-dir", default=str(ROOT_DIR / ".cache/hf_datasets"))
     parser.add_argument("--sample-size", type=int, default=100)
     parser.add_argument("--num-samples", type=int, default=5)
@@ -30,7 +30,7 @@ def parse_args():
 
 def build_inputs(tokenizer, question, device):
     messages = [
-        {"role": "system", "content": prompt_baseline},
+        {"role": "system", "content": promt},
         {"role": "user", "content": question},
     ]
     try:
@@ -101,7 +101,7 @@ def main():
         torch.cuda.manual_seed_all(args.seed)
 
     ds = load_dataset(
-        "json",
+        "parquet",
         data_files={"test": args.test_file},
         cache_dir=args.cache_dir,
     )
@@ -117,8 +117,9 @@ def main():
     total = 0
 
     for item in dataset:
-        question = item["question"]
-        answer = item["answer"]
+        question = item["question"]+' '.join(item["options"])
+        answer = item["correct"]
+        
         outputs = generate_samples(model, tokenizer, question, device, args)
         voted_pred, preds, votes = majority_vote(outputs)
         gold = extract_gold(answer)
